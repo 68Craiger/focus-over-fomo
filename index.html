@@ -1920,14 +1920,19 @@ function renderCoachResult(r) {
     </div>
     <div class="feedback-section" style="margin-top:16px">
       <h4>Improved version</h4>
-      <div class="improved-prompt" onclick="useImprovedPrompt('${encodeURIComponent(r.improved_prompt)}')">${r.improved_prompt}</div>
+      <div class="improved-prompt" id="improved-prompt-box">${r.improved_prompt}</div>
     </div>`;
   result.classList.add('visible');
   document.getElementById('save-continue-btn').style.display = 'inline-flex';
+
+  // Attach click handler safely — avoids encoding issues with apostrophes/quotes
+  const improvedBox = document.getElementById('improved-prompt-box');
+  if (improvedBox) {
+    improvedBox.addEventListener('click', () => useImprovedPrompt(r.improved_prompt));
+  }
 }
 
-function useImprovedPrompt(encoded) {
-  const text = decodeURIComponent(encoded);
+function useImprovedPrompt(text) {
   document.getElementById('sandbox-input').value = text;
   state.currentPrompt = text;
   showToast('✓', 'Improved version loaded — coach it again!');
